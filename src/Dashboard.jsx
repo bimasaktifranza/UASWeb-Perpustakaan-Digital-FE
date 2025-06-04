@@ -1,6 +1,14 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import {Menu, X, Home, Book, User, LogOut, Bell, BookOpen, BarChart2, Search, Star} from "lucide-react";
+import {
+  Menu, X, Bell, Search, Star, LogOut
+} from "lucide-react"; // Hanya ikon lain selain sidebar
+import {
+  FaTachometerAlt,
+  FaBook,
+  FaUser,
+  FaHome,
+} from "react-icons/fa";
 import { motion } from "framer-motion";
 
 function Dashboard() {
@@ -18,19 +26,13 @@ function Dashboard() {
   const [searchTerm, setSearchTerm] = useState("");
   const [bookTypeFilter, setBookTypeFilter] = useState("all");
 
-  // Tambahan: state untuk review
   const [selectedBook, setSelectedBook] = useState(null);
   const [reviewText, setReviewText] = useState("");
   const [rating, setRating] = useState(0);
-  const [reviews, setReviews] = useState({}); // { judulBuku: { rating, reviewText } }
+  const [reviews, setReviews] = useState({});
 
-  const toggleSidebar = () => {
-    setIsSidebarOpen(!isSidebarOpen);
-  };
-
-  const toggleNotif = () => {
-    setIsNotifOpen(!isNotifOpen);
-  };
+  const toggleSidebar = () => setIsSidebarOpen(!isSidebarOpen);
+  const toggleNotif = () => setIsNotifOpen(!isNotifOpen);
 
   const notifications = [
     "Update buku terbaru: Cantik Itu Luka",
@@ -39,24 +41,22 @@ function Dashboard() {
   ];
 
   const sidebarItems = [
-    { label: "Dashboard", path: "/dashboard", icon: <Home size={16} /> },
-    { label: "Daftar Buku", path: "/buku", icon: <Book size={16} /> },
-    { label: "Profil", path: "/profil", icon: <User size={16} /> },
+    { label: "Dashboard", path: "/dashboard", icon: <FaHome size={16} /> },
+    { label: "Daftar Buku", path: "/buku", icon: <FaBook size={16} /> },
+    { label: "Profil", path: "/profil", icon: <FaUser size={16} /> },
   ];
 
   const popularBooks = [
     {
       judul: "Buku Sakti Pemrograman Web",
       penulis: "Didik Setiawan",
-      cover:
-        "https://cdn.gramedia.com/uploads/picture_meta/2023/1/19/d6c2ynfcdbjkzuu4gllr5b.jpg",
+      cover: "https://cdn.gramedia.com/uploads/picture_meta/2023/1/19/d6c2ynfcdbjkzuu4gllr5b.jpg",
       kategori: "non-fiksi",
     },
     {
       judul: "Laskar Pelangi",
       penulis: "Andrea Hirata",
-      cover:
-        "https://upload.wikimedia.org/wikipedia/id/thumb/8/8e/Laskar_pelangi_sampul.jpg/250px-Laskar_pelangi_sampul.jpg",
+      cover: "https://upload.wikimedia.org/wikipedia/id/thumb/8/8e/Laskar_pelangi_sampul.jpg/250px-Laskar_pelangi_sampul.jpg",
       kategori: "fiksi",
     },
     {
@@ -68,29 +68,23 @@ function Dashboard() {
     {
       judul: "Pemrograman Web",
       penulis: "Agusriandi",
-      cover:
-        "https://id-test-11.slatic.net/p/2fdc1ca008deb541060b7bd9558316a8.jpg",
+      cover: "https://id-test-11.slatic.net/p/2fdc1ca008deb541060b7bd9558316a8.jpg",
       kategori: "non-fiksi",
     },
   ];
 
   const filteredBooks = popularBooks.filter((book) => {
-    const matchesSearch = book.judul
-      .toLowerCase()
-      .includes(searchTerm.toLowerCase());
-    const matchesType =
-      bookTypeFilter === "all" || book.kategori === bookTypeFilter;
+    const matchesSearch = book.judul.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesType = bookTypeFilter === "all" || book.kategori === bookTypeFilter;
     return matchesSearch && matchesType;
   });
 
-  // Fungsi buka modal review
   const openReviewModal = (book) => {
     setSelectedBook(book);
     setReviewText("");
     setRating(0);
   };
 
-  // Fungsi simpan review
   const saveReview = () => {
     setReviews((prev) => ({
       ...prev,
@@ -103,16 +97,11 @@ function Dashboard() {
     <div className="flex h-screen overflow-hidden bg-[#fefae0] font-serif text-[#2e2e2e]">
       {/* Sidebar */}
       <aside
-        className={`fixed z-40 top-0 left-0 h-full w-[220px] bg-[#3e1f0d] text-[#fefae0] p-4 flex flex-col transform transition-transform duration-300 ease-in-out md:static md:translate-x-0 ${
-          isSidebarOpen ? "translate-x-0" : "-translate-x-full"
-        }`}
+        className={`fixed z-40 top-0 left-0 h-full w-[220px] bg-[#3e1f0d] text-[#fefae0] p-4 flex flex-col transform transition-transform duration-300 ease-in-out md:static md:translate-x-0 ${isSidebarOpen ? "translate-x-0" : "-translate-x-full"}`}
       >
-        {/* ...sidebar content... */}
         <div className="flex justify-between items-center mb-4 md:hidden">
           <div className="text-lg font-bold">One IT Library</div>
-          <button onClick={toggleSidebar}>
-            <X size={24} />
-          </button>
+          <button onClick={toggleSidebar}><X size={24} /></button>
         </div>
 
         <div className="text-center mb-6 hidden md:block">
@@ -193,7 +182,6 @@ function Dashboard() {
           transition={{ duration: 0.5 }}
           className="p-4 md:p-6"
         >
-          {/* Quick Access */}
           <section className="flex gap-2 mb-4 justify-center md:justify-start">
             <button
               onClick={() => navigate("/buku")}
@@ -201,9 +189,13 @@ function Dashboard() {
             >
               📚 Pinjam Sekarang
             </button>
+            <button
+              onClick={() => navigate("/bukudipinjam")}
+                className="bg-gradient-to-r from-[#8e3200] to-[#ff9000] text-white px-4 py-1.5 rounded-full text-xs font-bold shadow-md hover:shadow-lg hover:scale-105 transform transition-all">
+                      📖 Buku Dipinjam
+            </button>
           </section>
 
-          {/* Rekomendasi Buku */}
           <section className="mb-6">
             <h3 className="text-[#3e1f0d] mb-2 text-lg font-semibold">
               📖 Rekomendasi Buku Populer
@@ -243,12 +235,9 @@ function Dashboard() {
                     alt={book.judul}
                     className="w-full h-40 object-cover rounded-md mb-2"
                   />
-                  <h4 className="text-sm font-semibold text-center">
-                    {book.judul}
-                  </h4>
+                  <h4 className="text-sm font-semibold text-center">{book.judul}</h4>
                   <p className="text-xs text-gray-600">{book.penulis}</p>
 
-                  {/* Review & Rating */}
                   {reviews[book.judul] && (
                     <div className="mt-1 text-xs text-yellow-600 text-center">
                       ⭐ {reviews[book.judul].rating} - "{reviews[book.judul].reviewText}"
@@ -267,13 +256,11 @@ function Dashboard() {
           </section>
         </motion.main>
 
-        {/* Footer */}
         <footer className="mt-8 p-4 text-sm text-gray-600 text-center">
           &copy; {new Date().getFullYear()} Perpustakaan Digital
         </footer>
       </div>
 
-      {/* Modal Review */}
       {selectedBook && (
         <div className="fixed inset-0 bg-[#fefae0] bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-white p-4 rounded shadow w-80">
@@ -292,9 +279,7 @@ function Dashboard() {
                 <Star
                   key={num}
                   size={16}
-                  className={`cursor-pointer ${
-                    rating >= num ? "text-yellow-500" : "text-gray-400"
-                  }`}
+                  className={`cursor-pointer ${rating >= num ? "text-yellow-500" : "text-gray-400"}`}
                   onClick={() => setRating(num)}
                 />
               ))}

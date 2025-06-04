@@ -14,7 +14,7 @@ function App() {
       <Route path="/dashboard" element={<Dashboard />} />
       <Route path="/buku" element={<DataBuku />} />
       <Route path="/profil" element={<Profil />} />
-      <Route path="/buku-dipinjam" element={<BukuDipinjam />} />
+      <Route path="/bukudipinjam" element={<BukuDipinjam />} />
 
      
       {/* Redirect untuk route yang tidak dikenali */}
