@@ -1,30 +1,47 @@
 import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import Navbar from "./Navbar";
-import { Search, Pencil, Calendar, BookOpen } from "lucide-react";
+import { Search, Pencil, Calendar, BookOpen, AlertCircle, CheckCircle } from "lucide-react";
 
 const ModalKonfirmasi = ({ show, onClose, onConfirm, pesan }) => {
   if (!show) return null;
   return (
-    <div className="fixed inset-0 bg-black/50 flex justify-center items-center z-50">
-      <div className="bg-white rounded-xl p-6 w-80 text-center shadow-lg">
-        <p className="mb-4 text-[#3e1f0d]">{pesan}</p>
+    <motion.div 
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      className="fixed inset-0 bg-black/50 flex justify-center items-center z-50 p-4"
+    >
+      <motion.div 
+        initial={{ scale: 0.9, opacity: 0, y: 20 }}
+        animate={{ scale: 1, opacity: 1, y: 0 }}
+        exit={{ scale: 0.9, opacity: 0, y: 20 }}
+        className="bg-white rounded-2xl p-8 w-full max-w-md text-center shadow-2xl border border-gray-100"
+      >
+        <div className="w-16 h-16 bg-gradient-to-br from-[#3e1f0d] to-[#d4a373] rounded-full flex items-center justify-center mx-auto mb-4">
+          <AlertCircle size={32} className="text-white" />
+        </div>
+        <p className="mb-6 text-[#3e1f0d] text-lg font-medium leading-relaxed">{pesan}</p>
         <div className="flex justify-center gap-4">
-          <button
+          <motion.button
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
             onClick={onConfirm}
-            className="bg-green-600 hover:bg-green-700 text-white px-4 py-1 rounded"
+            className="bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white px-6 py-3 rounded-full font-semibold shadow-lg hover:shadow-xl transition-all duration-300"
           >
-            Ya
-          </button>
-          <button
+            Ya, Lanjutkan
+          </motion.button>
+          <motion.button
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
             onClick={onClose}
-            className="bg-gray-400 hover:bg-gray-500 text-white px-4 py-1 rounded"
+            className="bg-gradient-to-r from-gray-400 to-gray-500 hover:from-gray-500 hover:to-gray-600 text-white px-6 py-3 rounded-full font-semibold shadow-lg hover:shadow-xl transition-all duration-300"
           >
             Batal
-          </button>
+          </motion.button>
         </div>
-      </div>
-    </div>
+      </motion.div>
+    </motion.div>
   );
 };
 
@@ -200,13 +217,39 @@ function DataBuku() {
     return cocokSearch && cocokKategori;
   });
 
+  const getCategoryStyle = (kategori) => {
+    switch (kategori) {
+      case 'Fiksi':
+        return 'bg-purple-100 text-purple-700 border-purple-200';
+      case 'Non-Fiksi':
+        return 'bg-blue-100 text-blue-700 border-blue-200';
+      case 'Dokumen':
+        return 'bg-green-100 text-green-700 border-green-200';
+      default:
+        return 'bg-gray-100 text-gray-700 border-gray-200';
+    }
+  };
+
+  const getCategoryIcon = (kategori) => {
+    switch (kategori) {
+      case 'Fiksi':
+        return '✨';
+      case 'Non-Fiksi':
+        return '🎓';
+      case 'Dokumen':
+        return '📄';
+      default:
+        return '📚';
+    }
+  };
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 50 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -50 }}
       transition={{ duration: 0.5 }}
-      className="flex flex-col min-h-screen w-full bg-[#fefae0] text-[#2e2e2e] font-serif"
+      className="flex flex-col min-h-screen w-full bg-gradient-to-br from-[#fefae0] via-[#fcf7e8] to-[#faf4e0] text-[#2e2e2e] font-serif"
     >
       <Navbar />
       <ModalKonfirmasi
@@ -215,106 +258,189 @@ function DataBuku() {
         onConfirm={modal.aksi}
         pesan={modal.pesan}
       />
-      <main className="flex-1 px-4 py-8 max-w-6xl mx-auto w-full">
-        <div className="mb-6">
-          <h2 className="text-3xl text-[#3e1f0d] mb-2 font-bold">
-            📘 Data Buku Perpustakaan
-          </h2>
-          <p className="text-gray-700">
-            Koleksi buku terbaik yang tersedia dalam sistem perpustakaan.
-          </p>
-        </div>
-
-        <div className="flex flex-col sm:flex-row sm:items-center gap-4 mb-8">
-          <div className="relative flex-1">
-            <input
-              type="text"
-              placeholder="Cari buku..."
-              value={searchQuery}
-              onChange={handleSearch}
-              className="w-full pl-10 pr-4 py-2 rounded-full border border-[#3e1f0d]/30 bg-white text-[#3b0a0a] focus:outline-none focus:ring-2 focus:ring-[#3b0a0a]"
-            />
-            <Search
-              size={18}
-              className="absolute left-3 top-1/2 transform -translate-y-1/2 text-[#3e1f0d]"
-            />
-          </div>
-          <select
-            className="w-full sm:w-auto rounded-full border border-[#3e1f0d]/30 px-4 py-2 bg-white text-[#3b0a0a] focus:outline-none focus:ring-2 focus:ring-[#3b0a0a]"
-            value={kategoriFilter}
-            onChange={(e) => setKategoriFilter(e.target.value)}
-          >
-            {kategoriList.map((kat) => (
-              <option key={kat} value={kat}>
-                {kat}
-              </option>
-            ))}
-          </select>
-        </div>
-
-        <section>
-          <h3 className="mb-3 text-xl font-semibold text-[#3e1f0d]">Daftar Buku</h3>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-            {bukuFiltered.length === 0 && (
-              <p className="col-span-full text-center text-gray-500">
-                Tidak ada buku ditemukan.
+      
+      <main className="flex-1 px-6 py-8 max-w-7xl mx-auto w-full">
+        {/* Header Section */}
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.2 }}
+          className="mb-8"
+        >
+          <div className="flex items-center gap-4 mb-4">
+            <div>
+              <h2 className="text-4xl text-[#3e1f0d] font-bold drop-shadow-sm">
+                📘 Daftar Buku Perpustakaan
+              </h2>
+              <p className="text-gray-700 text-lg mt-2">
+                Koleksi buku terbaik yang tersedia dalam sistem perpustakaan.
               </p>
+            </div>
+          </div>
+        </motion.div>
+
+        {/* Search and Filter Section */}
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.3 }}
+          className="flex flex-col lg:flex-row lg:items-center gap-6 mb-8 p-6 bg-white/70 backdrop-blur-sm rounded-2xl shadow-lg border border-white/50"
+        >
+          <div className="relative flex-1">
+            <div className="relative flex items-center">
+              {/* Ikon Search */}
+              <div className="absolute left-4">
+              <div className="bg-[#d4a373] p-2 rounded-full">
+
+                  <Search size={18} className="text-white" />
+                </div>
+              </div>
+              {/* Input */}
+              <input
+                type="text"
+                placeholder="Cari buku berdasarkan judul atau penulis..."
+                value={searchQuery}
+                onChange={handleSearch}
+                className="w-full pl-14 pr-6 py-4 rounded-2xl border-2 border-[#3e1f0d]/20 bg-white text-[#3b0a0a] focus:outline-none focus:ring-4 focus:ring-[#3b0a0a]/20 focus:border-[#3b0a0a] transition-all duration-300 shadow-sm hover:shadow-md text-lg"
+              />
+            </div>
+          </div>
+          
+          <div className="relative">
+            <select
+              className="w-full lg:w-auto rounded-2xl border-2 border-[#3e1f0d]/20 px-6 py-4 bg-white text-[#3b0a0a] focus:outline-none focus:ring-4 focus:ring-[#3b0a0a]/20 focus:border-[#3b0a0a] transition-all duration-300 shadow-sm hover:shadow-md text-lg font-medium cursor-pointer"
+              value={kategoriFilter}
+              onChange={(e) => setKategoriFilter(e.target.value)}
+            >
+              {kategoriList.map((kat) => (
+                <option key={kat} value={kat}>
+                  {kat === "Semua" ? "📚 Semua Kategori" : `${getCategoryIcon(kat)} ${kat}`}
+                </option>
+              ))}
+            </select>
+          </div>
+        </motion.div>
+
+        {/* Books Section */}
+        <section>
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.4 }}
+            className="flex items-center justify-between mb-6"
+          >
+            <h3 className="text-2xl font-bold text-[#3e1f0d] flex items-center gap-3">
+              <BookOpen size={28} className="text-[#d4a373]" />
+              Daftar Buku
+            </h3>
+            <div className="text-sm text-gray-600 bg-white/70 px-4 py-2 rounded-full border border-gray-200">
+              {bukuFiltered.length} buku ditemukan
+            </div>
+          </motion.div>
+          
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+            {bukuFiltered.length === 0 && (
+              <motion.div 
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                className="col-span-full text-center py-16"
+              >
+                <div className="w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <BookOpen size={48} className="text-gray-400" />
+                </div>
+                <p className="text-gray-500 text-xl font-medium">
+                  Tidak ada buku ditemukan.
+                </p>
+                <p className="text-gray-400 text-sm mt-2">
+                  Coba ubah kata kunci pencarian atau filter kategori.
+                </p>
+              </motion.div>
             )}
-            {bukuFiltered.map((buku) => (
+            
+            {bukuFiltered.map((buku, index) => (
               <motion.div
                 key={buku.id}
                 layout
-                initial={{ opacity: 0, scale: 0.8 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.8 }}
-                transition={{ duration: 0.3 }}
-                className="bg-white rounded-lg shadow-md p-4 flex flex-col"
+                initial={{ opacity: 0, y: 30, scale: 0.9 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                exit={{ opacity: 0, y: -30, scale: 0.9 }}
+                transition={{ 
+                  duration: 0.4,
+                  delay: index * 0.1,
+                  type: "spring",
+                  stiffness: 100
+                }}
+                whileHover={{ y: -8, scale: 1.02 }}
+                className="bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 p-6 flex flex-col border border-gray-100 group overflow-hidden relative"
               >
-                <div className="relative aspect-[2/3] w-full mb-4 rounded-md overflow-hidden">
+                {/* Availability Badge */}
+                <div className="absolute top-4 right-4 z-10">
+                  <div className={`px-3 py-1 rounded-full text-xs font-bold ${
+                    buku.tersedia > 0 
+                      ? 'bg-green-100 text-green-700 border border-green-200' 
+                      : 'bg-red-100 text-red-700 border border-red-200'
+                  }`}>
+                    {buku.tersedia > 0 ? `${buku.tersedia} tersedia` : 'Habis'}
+                  </div>
+                </div>
+
+                {/* Book Cover */}
+                <div className="relative aspect-[3/4] w-full mb-6 rounded-xl overflow-hidden bg-gradient-to-br from-gray-100 to-gray-200">
                   <img
                     src={buku.cover}
-                    alt={buku.judul}
-                    className="absolute inset-0 w-full h-full object-cover"
-                    loading="lazy"
+                                       alt={buku.judul}
+                    className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
                   />
                 </div>
-                <div className="flex-grow">
-                  <h4 className="font-semibold text-lg text-[#3e1f0d]">
-                    {buku.judul}
-                  </h4>
-                  <p className="flex items-center gap-2 text-gray-700 mt-1">
-                    <Pencil size={16} className="text-[#3e1f0d]" />
-                    {buku.penulis}
-                  </p>
-                  <p className="flex items-center gap-2 text-gray-700 mt-1">
-                    <Calendar size={16} className="text-[#3e1f0d]" />
-                    {buku.tahun}
-                  </p>
-                  <p className="flex items-center gap-2 text-gray-700 mt-1">
-                    <BookOpen size={16} className="text-[#3e1f0d]" />
-                    {buku.kategori}
-                  </p>
-                  <p className="mt-1 font-semibold text-[#6b705c]">
-                    Tersedia: {buku.tersedia}
-                  </p>
-                </div>
-                <button
-                  onClick={() => konfirmasiPinjam(buku.id)}
-                  disabled={buku.tersedia <= 0}
-                  className={`mt-4 w-full py-2 rounded-md font-semibold text-white ${
-                    buku.tersedia > 0
-                      ? "bg-[#d4a373] hover:bg-[#b9a97d]"
-                      : "bg-gray-400 cursor-not-allowed"
-                  } transition-colors duration-200`}
+
+                {/* Judul dan Penulis */}
+                <h4 className="text-xl font-semibold text-[#3e1f0d] mb-2">
+                  {buku.judul}
+                </h4>
+                <p className="text-sm text-gray-600 mb-1">
+                  Penulis: <span className="font-medium">{buku.penulis}</span>
+                </p>
+                <p className="text-sm text-gray-500 mb-3">Tahun: {buku.tahun}</p>
+
+                {/* Kategori */}
+                <span
+                  className={`text-xs font-medium px-3 py-1 rounded-full inline-block border ${getCategoryStyle(
+                    buku.kategori
+                  )}`}
                 >
-                  Pinjam Buku
-                </button>
+                  {getCategoryIcon(buku.kategori)} {buku.kategori}
+                </span>
+
+                {/* Tombol Pinjam / Kembalikan */}
+                <div className="mt-6">
+                  {peminjaman.find((p) => p.id === buku.id) ? (
+                    <motion.button
+                      whileTap={{ scale: 0.95 }}
+                      whileHover={{ scale: 1.03 }}
+                      onClick={() => konfirmasiKembalikan(buku.id)}
+                      className="w-full bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white px-4 py-3 rounded-full font-semibold shadow-md hover:shadow-lg transition-all duration-300"
+                    >
+                      Kembalikan Buku
+                    </motion.button>
+                  ) : (
+                    <motion.button
+                      whileTap={{ scale: 0.95 }}
+                      whileHover={{ scale: 1.03 }}
+                      onClick={() => konfirmasiPinjam(buku.id)}
+                      disabled={buku.tersedia === 0}
+                      className={`w-full ${
+                        buku.tersedia > 0
+                          ? 'bg-gradient-to-r from-yellow-600 to-yellow-700 hover:from-yellow-700 hover:to-yellow-800'
+                          : 'bg-gray-400 cursor-not-allowed'
+                      } text-white px-4 py-3 rounded-full font-semibold shadow-md hover:shadow-lg transition-all duration-300`}
+                    >
+                      {buku.tersedia > 0 ? "Pinjam Buku" : "Tidak Tersedia"}
+                    </motion.button>
+                  )}
+                </div>
               </motion.div>
             ))}
           </div>
-          <footer className="mt-8 p-4 text-sm text-gray-600 text-center">
-            &copy; {new Date().getFullYear()} Perpustakaan Digital
-          </footer>
         </section>
       </main>
     </motion.div>

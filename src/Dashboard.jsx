@@ -1,14 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import {
-  Menu, X, Bell, Search, Star, LogOut
-} from "lucide-react"; // Hanya ikon lain selain sidebar
-import {
-  FaTachometerAlt,
-  FaBook,
-  FaUser,
-  FaHome,
-} from "react-icons/fa";
+import {Menu, X, Bell, Search, Star, LogOut} from "lucide-react";
+import {FaTachometerAlt, FaBook, FaUser, FaHome,} from "react-icons/fa";
 import { motion } from "framer-motion";
 
 function Dashboard() {
@@ -71,6 +64,12 @@ function Dashboard() {
       cover: "https://id-test-11.slatic.net/p/2fdc1ca008deb541060b7bd9558316a8.jpg",
       kategori: "non-fiksi",
     },
+    {
+      judul: "Laporan Tahunan",
+      penulis: "Cahaya Dewi",
+      cover: "https://marketplace.canva.com/EAFrIXNBb48/2/0/1003w/canva-biru-modern-laporan-tahunan-sampul-buku-9Ok4whGdElQ.jpg",
+      kategori: "non-fiksi",
+    },
   ];
 
   const filteredBooks = popularBooks.filter((book) => {
@@ -94,42 +93,60 @@ function Dashboard() {
   };
 
   return (
-    <div className="flex h-screen overflow-hidden bg-[#fefae0] font-serif text-[#2e2e2e]">
+    <div className="flex h-screen overflow-hidden bg-gradient-to-br from-[#fefae0] via-[#fcf7e8] to-[#faf4e0] font-serif text-[#2e2e2e]">
+      {/* Overlay for mobile sidebar */}
+      {isSidebarOpen && (
+        <div 
+          className="fixed inset-0 bg-black bg-opacity-50 z-30 md:hidden"
+          onClick={toggleSidebar}
+        />
+      )}
+
       {/* Sidebar */}
       <aside
-        className={`fixed z-40 top-0 left-0 h-full w-[220px] bg-[#3e1f0d] text-[#fefae0] p-4 flex flex-col transform transition-transform duration-300 ease-in-out md:static md:translate-x-0 ${isSidebarOpen ? "translate-x-0" : "-translate-x-full"}`}
+        className={`fixed z-40 top-0 left-0 h-full w-[240px] bg-gradient-to-b from-[#3e1f0d] via-[#4a2515] to-[#3e1f0d] text-[#fefae0] p-6 flex flex-col transform transition-transform duration-300 ease-in-out md:static md:translate-x-0 shadow-2xl ${isSidebarOpen ? "translate-x-0" : "-translate-x-full"}`}
       >
-        <div className="flex justify-between items-center mb-4 md:hidden">
-          <div className="text-lg font-bold">One IT Library</div>
-          <button onClick={toggleSidebar}><X size={24} /></button>
+        <div className="flex justify-between items-center mb-6 md:hidden">
+          <div className="text-lg font-bold text-[#ffd60a]">One IT Library</div>
+          <button 
+            onClick={toggleSidebar}
+            className="p-1 rounded-full hover:bg-[#5a1616] transition-colors"
+          >
+            <X size={24} />
+          </button>
         </div>
 
-        <div className="text-center mb-6 hidden md:block">
-          <div className="text-xl font-bold mb-3">One IT Library</div>
+        <div className="text-center mb-8 hidden md:block">
+          <div className="text-2xl font-bold mb-2 text-[#fefae0] drop-shadow-lg">One IT Library</div>
         </div>
 
-        <ul className="list-none space-y-2 mt-4 flex-1">
-          {sidebarItems.map((item) => (
-            <li
+        <ul className="list-none space-y-3 mt-4 flex-1">
+          {sidebarItems.map((item, index) => (
+            <motion.li
               key={item.label}
-              className="flex items-center gap-2 p-2 rounded-md cursor-pointer hover:bg-[#5a1616] text-sm"
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: index * 0.1 }}
+              className="flex items-center gap-3 p-3 rounded-xl cursor-pointer hover:bg-gradient-to-r hover:from-[#5a1616] hover:to-[#6b1e1e] transition-all duration-300 text-sm group hover:scale-105 hover:shadow-lg"
               onClick={() => {
                 navigate(item.path);
                 setIsSidebarOpen(false);
               }}
             >
-              {item.icon}
-              <span>{item.label}</span>
-            </li>
+              <div className="group-hover:scale-110 transition-transform duration-200">
+                {item.icon}
+              </div>
+              <span className="font-medium">{item.label}</span>
+            </motion.li>
           ))}
         </ul>
 
-        <div className="mt-auto pt-4 border-t border-[#fefae0]">
+        <div className="mt-auto pt-6 border-t border-[#fefae0] border-opacity-30">
           <button
             onClick={() => navigate("/login")}
-            className="flex items-center gap-2 w-full text-sm font-bold px-2 py-2 rounded hover:bg-[#5a1616]"
+            className="flex items-center gap-3 w-full text-sm font-bold px-3 py-3 rounded-xl hover:bg-gradient-to-r hover:from-[#5a1616] hover:to-[#6b1e1e] transition-all duration-300 group hover:scale-105"
           >
-            <LogOut size={16} />
+            <LogOut size={16} className="group-hover:scale-110 transition-transform duration-200" />
             Keluar
           </button>
         </div>
@@ -138,38 +155,51 @@ function Dashboard() {
       {/* Main Area */}
       <div className="flex-1 flex flex-col overflow-y-auto">
         {/* Header */}
-        <header className="p-4 bg-[#fffdf5] flex justify-between items-center border-b border-gray-300">
-          <div className="flex items-center gap-3">
-            <button onClick={toggleSidebar} className="md:hidden text-[#3e1f0d]">
+        <header className="p-6 bg-gradient-to-r from-[#fffdf5] via-[#fefcf3] to-[#fffdf5] flex justify-between items-center border-b border-gray-200 shadow-sm backdrop-blur-sm">
+          <div className="flex items-center gap-4">
+            <button 
+              onClick={toggleSidebar} 
+              className="md:hidden text-[#3e1f0d] p-2 rounded-full hover:bg-[#ffd60a] hover:bg-opacity-20 transition-colors"
+            >
               <Menu size={24} />
             </button>
-            <h2 className="text-base md:text-lg font-semibold text-[#3e1f0d]">
+            <h2 className="text-xl md:text-2xl font-bold text-[#3e1f0d] drop-shadow-sm">
               One-IT Library
             </h2>
           </div>
-          <div className="flex items-center gap-3 relative">
-            <span className="text-xs md:text-sm">{formattedDate}</span>
+          <div className="flex items-center gap-4 relative">
+            <span className="text-sm md:text-base font-medium text-[#3e1f0d] bg-opacity-20 px-3 py-1 rounded-full">
+              {formattedDate}
+            </span>
             <div className="relative">
               <button
                 onClick={toggleNotif}
-                className="p-2 rounded-full hover:bg-gray-200"
+                className="p-3 rounded-full hover:bg-[#ffd60a] hover:bg-opacity-20 transition-colors relative"
               >
-                <Bell size={18} className="text-[#3e1f0d]" />
+                <Bell size={20} className="text-[#3e1f0d]" />
+                <div className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full animate-pulse"></div>
               </button>
               {isNotifOpen && (
-                <div className="absolute right-0 mt-1 w-56 bg-white rounded shadow border z-50">
+                <motion.div 
+                  initial={{ opacity: 0, y: -10, scale: 0.95 }}
+                  animate={{ opacity: 1, y: 0, scale: 1 }}
+                  className="absolute right-0 mt-2 w-64 bg-white rounded-xl shadow-2xl border border-gray-100 z-50 overflow-hidden"
+                >
+                  <div className="p-3 bg-gradient-to-r from-[#3e1f0d] to-[#4a2515] text-white">
+                    <h4 className="font-semibold text-sm">Notifikasi</h4>
+                  </div>
                   <ul className="max-h-48 overflow-y-auto">
                     {notifications.map((note, idx) => (
                       <li
                         key={idx}
-                        className="px-4 py-2 text-sm text-gray-700 border-b last:border-b-0 hover:bg-gray-100 cursor-pointer"
+                        className="px-4 py-3 text-sm text-gray-700 border-b last:border-b-0 hover:bg-gradient-to-r hover:from-[#ffd60a] hover:from-opacity-10 hover:to-transparent cursor-pointer transition-all duration-200"
                         onClick={() => alert(`Kamu klik notifikasi: "${note}"`)}
                       >
                         {note}
                       </li>
                     ))}
                   </ul>
-                </div>
+                </motion.div>
               )}
             </div>
           </div>
@@ -180,126 +210,207 @@ function Dashboard() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
-          className="p-4 md:p-6"
+          className="p-6 md:p-8 flex-1"
         >
-          <section className="flex gap-2 mb-4 justify-center md:justify-start">
-            <button
+          {/* Action Buttons */}
+          <section className="flex gap-4 mb-8 justify-center md:justify-start">
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
               onClick={() => navigate("/buku")}
-              className="bg-[#3e1f0d] text-[#fefae0] px-4 py-1.5 rounded-full text-xs font-bold hover:bg-[#2a0707]"
+              className="bg-gradient-to-r from-[#3e1f0d] to-[#4a2515] text-[#fefae0] px-6 py-3 rounded-full text-sm font-bold hover:shadow-lg transition-all duration-300 flex items-center gap-2"
             >
-              📚 Pinjam Sekarang
-            </button>
-            <button
+              <span className="text-lg">📚</span>
+              Pinjam Sekarang
+            </motion.button>
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
               onClick={() => navigate("/bukudipinjam")}
-                className="bg-gradient-to-r from-[#8e3200] to-[#ff9000] text-white px-4 py-1.5 rounded-full text-xs font-bold shadow-md hover:shadow-lg hover:scale-105 transform transition-all">
-                      📖 Buku Dipinjam
-            </button>
+              className="bg-gradient-to-r from-[#3e1f0d] to-[#4a2515] text-[#fefae0] px-6 py-3 rounded-full text-sm font-bold hover:shadow-lg transition-all duration-300 flex items-center gap-2"
+            >
+              <span className="text-lg">📖</span>
+              Buku Dipinjam
+            </motion.button>
           </section>
 
-          <section className="mb-6">
-            <h3 className="text-[#3e1f0d] mb-2 text-lg font-semibold">
-              📖 Rekomendasi Buku Populer
-            </h3>
-            <div className="flex gap-2 mb-4">
-              <div className="flex w-full border rounded overflow-hidden">
+          {/* Book Recommendations */}
+          <section className="mb-8">
+            <div className="flex items-center gap-3 mb-6">
+              <h3 className="text-[#3e1f0d] text-2xl font-bold">
+                📖 Rekomendasi Buku Populer
+              </h3>
+            </div>
+
+            {/* Search and Filter */}
+            <div className="flex gap-4 mb-6 flex-wrap">
+              <div className="flex flex-1 min-w-[200px] border-2 border-[#3e1f0d] border-opacity-20 rounded-full overflow-hidden shadow-sm hover:shadow-md transition-shadow bg-white">
                 <input
                   type="text"
-                  placeholder="Cari buku..."
+                  placeholder="Cari buku favorit Anda..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="flex-1 px-2 py-1 text-sm outline-none"
+                  className="flex-1 px-4 py-3 text-sm outline-none bg-transparent"
                 />
-                <button className="flex items-center justify-center px-3 bg-[#3e1f0d] text-[#fefae0]">
-                  <Search size={16} />
+                <button className="flex items-center justify-center px-4 bg-gradient-to-r from-[#3e1f0d] to-[#4a2515] text-[#fefae0] hover:from-[#4a2515] hover:to-[#3e1f0d] transition-all duration-300">
+                  <Search size={18} />
                 </button>
               </div>
               <select
                 value={bookTypeFilter}
                 onChange={(e) => setBookTypeFilter(e.target.value)}
-                className="border rounded px-2 py-1 text-sm"
+                className="border-2 border-[#3e1f0d] border-opacity-20 rounded-full px-4 py-3 text-sm bg-white shadow-sm hover:shadow-md transition-shadow outline-none"
               >
-                <option value="all">Semua</option>
-                <option value="fiksi">Fiksi</option>
-                <option value="non-fiksi">Non-Fiksi</option>
+                <option value="all">📚 Semua Kategori</option>
+                <option value="fiksi">✨ Fiksi</option>
+                <option value="non-fiksi">🎓 Non-Fiksi</option>
               </select>
             </div>
 
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+            {/* Books Grid */}
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6">
               {filteredBooks.map((book, idx) => (
-                <div
+                <motion.div
                   key={idx}
-                  className="bg-white rounded-lg shadow p-2 flex flex-col items-center hover:shadow-lg cursor-pointer transition-shadow"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: idx * 0.1 }}
+                  whileHover={{ y: -8, scale: 1.02 }}
+                  className="bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 p-4 flex flex-col items-center group border border-gray-100"
                 >
-                  <img
-                    src={book.cover}
-                    alt={book.judul}
-                    className="w-full h-40 object-cover rounded-md mb-2"
-                  />
-                  <h4 className="text-sm font-semibold text-center">{book.judul}</h4>
-                  <p className="text-xs text-gray-600">{book.penulis}</p>
+                  <div className="relative overflow-hidden rounded-xl mb-3 w-full">
+                    <img
+                      src={book.cover}
+                      alt={book.judul}
+                      className="w-full h-48 object-cover group-hover:scale-110 transition-transform duration-500"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                  </div>
+                  
+                  <h4 className="text-sm font-bold text-center text-[#3e1f0d] line-clamp-2 mb-1 group-hover:text-[#ffd60a] transition-colors">
+                    {book.judul}
+                  </h4>
+                  <p className="text-xs text-gray-600 mb-2 text-center">{book.penulis}</p>
+
+                  <div className="flex items-center gap-1 mb-2">
+                    <span className={`text-xs px-2 py-1 rounded-full font-medium ${
+                      book.kategori === 'fiksi' 
+                        ? 'bg-purple-100 text-purple-700' 
+                        : 'bg-blue-100 text-blue-700'
+                    }`}>
+                      {book.kategori === 'fiksi' ? '✨ Fiksi' : '🎓 Non-Fiksi'}
+                    </span>
+                  </div>
 
                   {reviews[book.judul] && (
-                    <div className="mt-1 text-xs text-yellow-600 text-center">
-                      ⭐ {reviews[book.judul].rating} - "{reviews[book.judul].reviewText}"
-                    </div>
+                    <motion.div 
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      className="mt-2 text-xs text-center p-2 bg-gradient-to-r from-yellow-50 to-orange-50 rounded-lg border border-yellow-200"
+                    >
+                      <div className="flex justify-center mb-1">
+                        {[...Array(reviews[book.judul].rating)].map((_, i) => (
+                          <span key={i} className="text-yellow-500">⭐</span>
+                        ))}
+                      </div>
+                      <p className="text-gray-700 italic">"{reviews[book.judul].reviewText}"</p>
+                    </motion.div>
                   )}
 
-                  <button
+                  <motion.button
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
                     onClick={() => openReviewModal(book)}
-                    className="mt-2 text-xs text-blue-500 underline"
+                    className="mt-3 text-xs text-white bg-gradient-to-r from-[#3e1f0d] to-[#4a2515] px-3 py-2 rounded-full hover:shadow-lg transition-all duration-300 font-medium"
                   >
-                    Tulis Review
-                  </button>
-                </div>
+                    ✍️ Tulis Review
+                  </motion.button>
+                </motion.div>
               ))}
             </div>
           </section>
         </motion.main>
 
-        <footer className="mt-8 p-4 text-sm text-gray-600 text-center">
-          &copy; {new Date().getFullYear()} Perpustakaan Digital
+        {/* Footer */}
+        <footer className="mt-auto p-6 text-sm text-gray-600 text-center border-t border-gray-200 bg-gradient-to-r from-[#fffdf5] to-[#fefcf3]">
+          <div className="flex items-center justify-center gap-2">
+            <span>&copy; {new Date().getFullYear()} Perpustakaan Digital</span> 
+          </div>
         </footer>
       </div>
 
+      {/* Review Modal */}
       {selectedBook && (
-        <div className="fixed inset-0 bg-[#fefae0] bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white p-4 rounded shadow w-80">
-            <h3 className="text-sm font-semibold mb-2">
-              Tulis Review untuk "{selectedBook.judul}"
-            </h3>
+        <motion.div 
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4"
+        >
+          <motion.div 
+            initial={{ scale: 0.9, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            className="bg-white p-6 rounded-2xl shadow-2xl w-full max-w-md border border-gray-100"
+          >
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-12 h-12 bg-gradient-to-br from-[#3e1f0d] to-[#ffd60a] rounded-full flex items-center justify-center">
+                <span className="text-white text-lg">✍️</span>
+              </div>
+              <div>
+                <h3 className="text-lg font-bold text-[#3e1f0d] mb-1">
+                  Review Buku
+                </h3>
+                <p className="text-sm text-gray-600">"{selectedBook.judul}"</p>
+              </div>
+            </div>
+            
             <textarea
               value={reviewText}
               onChange={(e) => setReviewText(e.target.value)}
-              placeholder="Tulis review..."
-              className="w-full border rounded p-1 mb-2 text-sm"
+              placeholder="Bagikan pengalaman membaca Anda..."
+              className="w-full border-2 border-gray-200 rounded-xl p-3 mb-4 text-sm resize-none h-24 focus:border-[#3e1f0d] focus:outline-none transition-colors"
+              rows="3"
             />
-            <div className="flex items-center gap-1 mb-2">
-              <span className="text-xs">Rating:</span>
-              {[1, 2, 3, 4, 5].map((num) => (
-                <Star
-                  key={num}
-                  size={16}
-                  className={`cursor-pointer ${rating >= num ? "text-yellow-500" : "text-gray-400"}`}
-                  onClick={() => setRating(num)}
-                />
-              ))}
-            </div>
-            <div className="flex justify-end gap-2">
-              <button
+            
+            <div className="flex items-center gap-2 mb-6">
+              <span className="text-sm font-medium text-[#3e1f0d]">Rating:</span>
+              <div className="flex gap-1">
+                {[1, 2, 3, 4, 5].map((num) => (
+                  <motion.button
+                    key={num}
+                    whileHover={{ scale: 1.2 }}
+                    whileTap={{ scale: 0.9 }}
+                    onClick={() => setRating(num)}
+                  >
+                    <Star
+                      size={20}
+                      className={`cursor-pointer transition-colors ${
+                        rating >= num ? "text-yellow-500 fill-yellow-500" : "text-gray-300"
+                      }`}
+                    />
+                  </motion.button>
+                ))}
+              </div>
+            </div>           
+           <div className="flex justify-end gap-3">
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
                 onClick={() => setSelectedBook(null)}
-                className="text-xs px-2 py-1 border rounded"
-              >
+                className="px-4 py-2 border-2 border-gray-200 rounded-full text-sm font-medium hover:bg-gray-50 transition-colors"
+                >
                 Batal
-              </button>
-              <button
+              </motion.button>
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
                 onClick={saveReview}
-                className="text-xs px-2 py-1 bg-blue-500 text-white rounded"
-              >
-                Simpan
-              </button>
+                className="px-6 py-2 bg-gradient-to-r from-[#3e1f0d] to-[#4a2515] text-white rounded-full text-sm font-medium hover:shadow-lg transition-all duration-300"
+                >
+                Simpan Review
+              </motion.button>
             </div>
-          </div>
-        </div>
+          </motion.div>
+        </motion.div>
       )}
     </div>
   );
