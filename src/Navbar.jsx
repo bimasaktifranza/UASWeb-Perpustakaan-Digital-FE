@@ -68,7 +68,7 @@ export default function Navbar() {
               className="py-4 px-6 border-b border-[#f0eada] text-base cursor-pointer hover:bg-[#fefae0]"
               onClick={() => handleNavigate("/buku")}
             >
-              Jelajah Buku
+              Daftar Buku
             </li>
             <li
               className="py-4 px-6 border-b border-[#f0eada] text-base cursor-pointer hover:bg-[#fefae0]"
