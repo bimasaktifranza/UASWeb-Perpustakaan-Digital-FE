@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import {Menu, X, Bell, Search, Star, LogOut} from "lucide-react";
+import {Menu, X, Bell, Search, LogOut} from "lucide-react";
 import {FaTachometerAlt, FaBook, FaUser, FaHome,} from "react-icons/fa";
 import { motion } from "framer-motion";
 
@@ -18,11 +18,6 @@ function Dashboard() {
   const [isNotifOpen, setIsNotifOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [bookTypeFilter, setBookTypeFilter] = useState("all");
-
-  const [selectedBook, setSelectedBook] = useState(null);
-  const [reviewText, setReviewText] = useState("");
-  const [rating, setRating] = useState(0);
-  const [reviews, setReviews] = useState({});
 
   const toggleSidebar = () => setIsSidebarOpen(!isSidebarOpen);
   const toggleNotif = () => setIsNotifOpen(!isNotifOpen);
@@ -77,20 +72,6 @@ function Dashboard() {
     const matchesType = bookTypeFilter === "all" || book.kategori === bookTypeFilter;
     return matchesSearch && matchesType;
   });
-
-  const openReviewModal = (book) => {
-    setSelectedBook(book);
-    setReviewText("");
-    setRating(0);
-  };
-
-  const saveReview = () => {
-    setReviews((prev) => ({
-      ...prev,
-      [selectedBook.judul]: { reviewText, rating },
-    }));
-    setSelectedBook(null);
-  };
 
   return (
     <div className="flex h-screen overflow-hidden bg-gradient-to-br from-[#fefae0] via-[#fcf7e8] to-[#faf4e0] font-serif text-[#2e2e2e]">
@@ -266,7 +247,6 @@ function Dashboard() {
                 <option value="non-fiksi">🎓 Non-Fiksi</option>
               </select>
             </div>
-
             {/* Books Grid */}
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6">
               {filteredBooks.map((book, idx) => (
@@ -301,30 +281,6 @@ function Dashboard() {
                       {book.kategori === 'fiksi' ? '✨ Fiksi' : '🎓 Non-Fiksi'}
                     </span>
                   </div>
-
-                  {reviews[book.judul] && (
-                    <motion.div 
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
-                      className="mt-2 text-xs text-center p-2 bg-gradient-to-r from-yellow-50 to-orange-50 rounded-lg border border-yellow-200"
-                    >
-                      <div className="flex justify-center mb-1">
-                        {[...Array(reviews[book.judul].rating)].map((_, i) => (
-                          <span key={i} className="text-yellow-500">⭐</span>
-                        ))}
-                      </div>
-                      <p className="text-gray-700 italic">"{reviews[book.judul].reviewText}"</p>
-                    </motion.div>
-                  )}
-
-                  <motion.button
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                    onClick={() => openReviewModal(book)}
-                    className="mt-3 text-xs text-white bg-gradient-to-r from-[#3e1f0d] to-[#4a2515] px-3 py-2 rounded-full hover:shadow-lg transition-all duration-300 font-medium"
-                  >
-                    ✍️ Tulis Review
-                  </motion.button>
                 </motion.div>
               ))}
             </div>
@@ -338,80 +294,6 @@ function Dashboard() {
           </div>
         </footer>
       </div>
-
-      {/* Review Modal */}
-      {selectedBook && (
-        <motion.div 
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4"
-        >
-          <motion.div 
-            initial={{ scale: 0.9, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            className="bg-white p-6 rounded-2xl shadow-2xl w-full max-w-md border border-gray-100"
-          >
-            <div className="flex items-center gap-3 mb-4">
-              <div className="w-12 h-12 bg-gradient-to-br from-[#3e1f0d] to-[#ffd60a] rounded-full flex items-center justify-center">
-                <span className="text-white text-lg">✍️</span>
-              </div>
-              <div>
-                <h3 className="text-lg font-bold text-[#3e1f0d] mb-1">
-                  Review Buku
-                </h3>
-                <p className="text-sm text-gray-600">"{selectedBook.judul}"</p>
-              </div>
-            </div>
-            
-            <textarea
-              value={reviewText}
-              onChange={(e) => setReviewText(e.target.value)}
-              placeholder="Bagikan pengalaman membaca Anda..."
-              className="w-full border-2 border-gray-200 rounded-xl p-3 mb-4 text-sm resize-none h-24 focus:border-[#3e1f0d] focus:outline-none transition-colors"
-              rows="3"
-            />
-            
-            <div className="flex items-center gap-2 mb-6">
-              <span className="text-sm font-medium text-[#3e1f0d]">Rating:</span>
-              <div className="flex gap-1">
-                {[1, 2, 3, 4, 5].map((num) => (
-                  <motion.button
-                    key={num}
-                    whileHover={{ scale: 1.2 }}
-                    whileTap={{ scale: 0.9 }}
-                    onClick={() => setRating(num)}
-                  >
-                    <Star
-                      size={20}
-                      className={`cursor-pointer transition-colors ${
-                        rating >= num ? "text-yellow-500 fill-yellow-500" : "text-gray-300"
-                      }`}
-                    />
-                  </motion.button>
-                ))}
-              </div>
-            </div>           
-           <div className="flex justify-end gap-3">
-              <motion.button
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                onClick={() => setSelectedBook(null)}
-                className="px-4 py-2 border-2 border-gray-200 rounded-full text-sm font-medium hover:bg-gray-50 transition-colors"
-                >
-                Batal
-              </motion.button>
-              <motion.button
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                onClick={saveReview}
-                className="px-6 py-2 bg-gradient-to-r from-[#3e1f0d] to-[#4a2515] text-white rounded-full text-sm font-medium hover:shadow-lg transition-all duration-300"
-                >
-                Simpan Review
-              </motion.button>
-            </div>
-          </motion.div>
-        </motion.div>
-      )}
     </div>
   );
 }
